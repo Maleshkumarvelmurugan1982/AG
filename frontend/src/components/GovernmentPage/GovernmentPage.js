@@ -84,9 +84,13 @@ function GovernmentPage() {
     }
     const scheme = schemes[index];
     try {
-      const res = await axios.put(`process.env.REACT_APP_API_URL/schemes`${scheme._id}`, {
-        name: editScheme.trim(),
-      });
+      const res = await axios.put(
+        `${process.env.REACT_APP_API_URL}/schemes/${scheme._id}`,
+        {
+          name: editScheme.trim(),
+        }
+       );
+
       const updatedSchemes = [...schemes];
       updatedSchemes[index] = res.data;
       setSchemes(updatedSchemes);
