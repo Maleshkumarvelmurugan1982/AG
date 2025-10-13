@@ -26,16 +26,16 @@ function RegDeliverymanPage({ deliverymanId }) {
         setLoading(true);
 
         // Fetch seller orders
-        const sellerResponse = await axios.get("http://localhost:8070/sellerorder/");
+        const sellerResponse = await axios.get(`process.env.REACT_APP_API_URL/sellerorder/`);
         setSellerOrders(sellerResponse.data ?? []);
 
         // Fetch farmer orders
-        const farmerResponse = await axios.get("http://localhost:8070/farmerorder/");
+        const farmerResponse = await axios.get(`process.env.REACT_APP_API_URL/farmerorder/`);
         setFarmerOrders(farmerResponse.data ?? []);
 
         // Fetch salary from new backend endpoint
         if (deliverymanId) {
-          const salaryResponse = await axios.get(`http://localhost:8070/salary/${deliverymanId}`);
+          const salaryResponse = await axios.get(`process.env.REACT_APP_API_URL/salary/${deliverymanId}`);
           setSalary(salaryResponse.data.salary ?? 0);
         }
       } catch (error) {
