@@ -7,53 +7,70 @@ import { useNavigate } from "react-router-dom";
 
 function GovernmentPage() {
   const navigate = useNavigate();
-  // Login states
+
+  // ------------------ Login states ------------------
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
 
-  // Schemes states
+  // ------------------ Schemes states ------------------
   const [schemes, setSchemes] = useState([]);
   const [newScheme, setNewScheme] = useState("");
   const [editIndex, setEditIndex] = useState(null);
   const [editScheme, setEditScheme] = useState("");
 
-  // Delivery men states
+  // ------------------ Delivery men states ------------------
   const [deliveryMen, setDeliveryMen] = useState([]);
   const [showDeliveryMen, setShowDeliveryMen] = useState(false);
   const [salaryInputs, setSalaryInputs] = useState({});
 
-  // Fetch schemes on mount but only if logged in
+  // ------------------ Fetch schemes on mount if logged in ------------------
   useEffect(() => {
-    if (loggedIn) {
-      fetchSchemes();
-    }
+    if (loggedIn) fetchSchemes();
   }, [loggedIn]);
 
-  // Fetch schemes from backend
+  // ------------------ Fetch schemes ------------------
   const fetchSchemes = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/schemes`);
-      setSchemes(res.data);
+      let data = res.data;
+
+      // Normalize to array
+      if (!Array.isArray(data)) {
+        if (data && typeof data === "object") data = [data];
+        else data = [];
+      }
+
+      setSchemes(data);
     } catch (err) {
       console.error("Failed to fetch schemes:", err);
       alert("Failed to load schemes. Please try again later.");
+      setSchemes([]);
     }
   };
 
-  // Fetch delivery men from backend
+  // ------------------ Fetch delivery men ------------------
   const fetchDeliveryMen = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/deliverymen`);
-      setDeliveryMen(res.data);
+      let data = res.data;
+
+      // Normalize to array
+      if (!Array.isArray(data)) {
+        if (data && typeof data === "object") data = [data];
+        else data = [];
+      }
+
+      setDeliveryMen(data);
     } catch (err) {
       console.error("Failed to fetch delivery men:", err);
       alert("Failed to load delivery men. Please try again later.");
+      setDeliveryMen([]);
     }
   };
 
-  // Add new scheme
+  // ------------------ Add new scheme ------------------
   const handleAddScheme = async () => {
     if (!newScheme.trim()) {
       alert("Please enter a scheme name");
@@ -71,7 +88,7 @@ function GovernmentPage() {
     }
   };
 
-  // Edit scheme handlers
+  // ------------------ Edit scheme ------------------
   const handleEditScheme = (index) => {
     setEditIndex(index);
     setEditScheme(schemes[index].name);
@@ -86,11 +103,8 @@ function GovernmentPage() {
     try {
       const res = await axios.put(
         `${process.env.REACT_APP_API_URL}/schemes/${scheme._id}`,
-        {
-          name: editScheme.trim(),
-        }
+        { name: editScheme.trim() }
       );
-
       const updatedSchemes = [...schemes];
       updatedSchemes[index] = res.data;
       setSchemes(updatedSchemes);
@@ -101,7 +115,7 @@ function GovernmentPage() {
     }
   };
 
-  // Delete scheme handler
+  // ------------------ Delete scheme ------------------
   const handleDeleteScheme = async (index) => {
     const scheme = schemes[index];
     try {
@@ -113,20 +127,19 @@ function GovernmentPage() {
     }
   };
 
-  // Handle salary input change
+  // ------------------ Salary update ------------------
   const handleSalaryChange = (id, value) => {
     setSalaryInputs((prev) => ({ ...prev, [id]: value }));
   };
 
-  // Provide salary to delivery man
   const provideSalary = async (id) => {
-    if (!salaryInputs[id]) {
+    const salary = salaryInputs[id];
+    if (!salary) {
       alert("Please enter a salary amount");
       return;
     }
 
-    const numericSalary = Number(salaryInputs[id]); // ✅ Convert to number
-
+    const numericSalary = Number(salary);
     if (isNaN(numericSalary)) {
       alert("Salary must be a valid number");
       return;
@@ -134,7 +147,7 @@ function GovernmentPage() {
 
     try {
       await axios.put(`${process.env.REACT_APP_API_URL}/deliverymen/${id}/salary`, {
-        salary: numericSalary, // ✅ send as number
+        salary: numericSalary,
       });
       alert("Salary updated successfully!");
       fetchDeliveryMen();
@@ -144,7 +157,7 @@ function GovernmentPage() {
     }
   };
 
-  // Handle login submit
+  // ------------------ Login ------------------
   const handleLogin = (e) => {
     e.preventDefault();
     if (username === "admin" && password === "admin123") {
@@ -157,7 +170,6 @@ function GovernmentPage() {
     }
   };
 
-  // Logout handler
   const handleLogout = () => {
     setLoggedIn(false);
     setSchemes([]);
@@ -227,12 +239,8 @@ function GovernmentPage() {
               className="input-field"
               required
             />
-            {loginError && (
-              <p style={{ color: "red", textAlign: "center" }}>{loginError}</p>
-            )}
-            <button type="submit" className="add-button">
-              Login
-            </button>
+            {loginError && <p style={{ color: "red", textAlign: "center" }}>{loginError}</p>}
+            <button type="submit" className="add-button">Login</button>
           </form>
           <div style={{ textAlign: "center", marginTop: "20px" }}>
             <button
@@ -295,33 +303,13 @@ function GovernmentPage() {
                   <td>
                     {editIndex === index ? (
                       <>
-                        <button
-                          className="save-btn"
-                          onClick={() => handleSaveEdit(index)}
-                        >
-                          Save
-                        </button>
-                        <button
-                          className="cancel-btn"
-                          onClick={() => setEditIndex(null)}
-                        >
-                          Cancel
-                        </button>
+                        <button className="save-btn" onClick={() => handleSaveEdit(index)}>Save</button>
+                        <button className="cancel-btn" onClick={() => setEditIndex(null)}>Cancel</button>
                       </>
                     ) : (
                       <>
-                        <button
-                          className="edit-btn"
-                          onClick={() => handleEditScheme(index)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="delete-btn"
-                          onClick={() => handleDeleteScheme(index)}
-                        >
-                          Delete
-                        </button>
+                        <button className="edit-btn" onClick={() => handleEditScheme(index)}>Edit</button>
+                        <button className="delete-btn" onClick={() => handleDeleteScheme(index)}>Delete</button>
                       </>
                     )}
                   </td>
@@ -329,9 +317,7 @@ function GovernmentPage() {
               ))}
               {schemes.length === 0 && (
                 <tr>
-                  <td colSpan="2" style={{ textAlign: "center" }}>
-                    No schemes available.
-                  </td>
+                  <td colSpan="2" style={{ textAlign: "center" }}>No schemes available.</td>
                 </tr>
               )}
             </tbody>
@@ -384,9 +370,7 @@ function GovernmentPage() {
                 ))}
                 {deliveryMen.length === 0 && (
                   <tr>
-                    <td colSpan="6" style={{ textAlign: "center" }}>
-                      No delivery men found.
-                    </td>
+                    <td colSpan="6" style={{ textAlign: "center" }}>No delivery men found.</td>
                   </tr>
                 )}
               </tbody>
