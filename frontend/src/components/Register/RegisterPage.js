@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import "./RegisterPage.css";
 import Navbar from "../Navbar/Navbar";
@@ -11,8 +11,10 @@ export default function SignUp() {
     formState: { errors },
   } = useForm();
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
-    console.log(data);
+    console.log("Form Data:", data);
 
     let url = "";
 
@@ -27,7 +29,8 @@ export default function SignUp() {
         url = `${process.env.REACT_APP_API_URL}/deliveryman/register`;
         break;
       default:
-        break;
+        alert("Invalid role selected");
+        return;
     }
 
     try {
@@ -40,18 +43,19 @@ export default function SignUp() {
         body: JSON.stringify(data),
       });
 
-      // Handle empty or non-JSON responses
       const text = await response.text();
       const responseData = text ? JSON.parse(text) : {};
 
       if (response.ok) {
-        alert("Registration Successful");
+        alert("Registration Successful!");
+        // Redirect to login page after registration
+        navigate("/login");
       } else {
-        alert(responseData.error || "Registration failed");
+        alert(responseData.error || "Registration failed. Please try again.");
       }
     } catch (error) {
-      console.error(error);
-      alert("Registration failed. Please try again later.");
+      console.error("Registration Error:", error);
+      alert("Registration failed. Please check your connection or try later.");
     }
   };
 
@@ -62,6 +66,7 @@ export default function SignUp() {
         <div className="signup-inner-container">
           <form onSubmit={handleSubmit(onSubmit)}>
             <h3>Sign Up</h3>
+
             <div className="select-role">
               <label>Role</label>
               <select {...register("userRole", { required: true })} required>
@@ -112,7 +117,7 @@ export default function SignUp() {
               />
               {errors.password && (
                 <span className="error">
-                  Password is required and must be at least 6 characters long
+                  Password is required and must be at least 6 characters
                 </span>
               )}
             </div>
@@ -135,7 +140,6 @@ export default function SignUp() {
               </button>
             </div>
 
-            {/* Back to Home button */}
             <div className="back-home">
               <Link to="/">
                 <button type="button" className="back-home-button">
@@ -145,14 +149,15 @@ export default function SignUp() {
             </div>
 
             <p className="forgot-password text-right">
-              Already registered <Link to="/login">sign in?</Link>
+              Already registered? <Link to="/login">Sign in</Link>
             </p>
           </form>
         </div>
+
         <div className="signup-image">
           <img
             src="https://assets-global.website-files.com/5d2fb52b76aabef62647ed9a/6195c8e178a99295d45307cb_allgreen1000-550.jpg"
-            alt=""
+            alt="Sign Up"
             className="img-signup"
           />
         </div>
