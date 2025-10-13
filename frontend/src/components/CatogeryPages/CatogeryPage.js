@@ -16,19 +16,19 @@ function CatogeryPage() {
 
         switch (catogery) {
           case "Veg":
-            url = `process.env.REACT_APP_API_URL/product/Vegetable`;
+            url = `${process.env.REACT_APP_API_URL}/product/Vegetable`;
             break;
           case "Fruit":
-            url = `process.env.REACT_APP_API_URL/product/fruit`;
+            url = `${process.env.REACT_APP_API_URL}/product/fruit`;
             break;
           case "Grain":
             url = "http://localhost:8070/product/Grain";
             break;
           case "Spices":
-            url = `process.env.REACT_APP_API_URL/product/spices`;
+            url = `${process.env.REACT_APP_API_URL}/product/spices`;
             break;
           case "Other":
-            url = `process.env.REACT_APP_API_URL/product/other`;
+            url = `${process.env.REACT_APP_API_URL}/product/other`;
             break;
           default:
             break;
