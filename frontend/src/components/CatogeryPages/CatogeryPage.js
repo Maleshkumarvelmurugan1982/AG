@@ -22,7 +22,7 @@ function CatogeryPage() {
             url = `${process.env.REACT_APP_API_URL}/product/fruit`;
             break;
           case "Grain":
-            url = `${process.env.REACT_APP_API_URL}/product/Grain";
+            url = `${process.env.REACT_APP_API_URL}/product/Grain`;
             break;
           case "Spices":
             url = `${process.env.REACT_APP_API_URL}/product/spices`;
