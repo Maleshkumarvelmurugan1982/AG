@@ -22,7 +22,7 @@ function CatogeryPage() {
             url = `${process.env.REACT_APP_API_URL}/product/fruit`;
             break;
           case "Grain":
-            url = "http://localhost:8070/product/Grain";
+            url = `${process.env.REACT_APP_API_URL}/product/Grain";
             break;
           case "Spices":
             url = `${process.env.REACT_APP_API_URL}/product/spices`;
@@ -44,7 +44,7 @@ function CatogeryPage() {
       /*
 
       try {
-        const response_add = await fetch("http://localhost:8070/product/add");
+        const response_add = await fetch(`${process.env.REACT_APP_API_URL}/product/add");
         const data = await response_add.json();
         setProducts(data);
       } catch (error) {
