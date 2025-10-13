@@ -34,7 +34,7 @@ function GovernmentPage() {
   // Fetch schemes from backend
   const fetchSchemes = async () => {
     try {
-      const res = await axios.get(`process.env.REACT_APP_API_URL/schemes`);
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/schemes`);
       setSchemes(res.data);
     } catch (err) {
       console.error("Failed to fetch schemes:", err);
@@ -45,7 +45,7 @@ function GovernmentPage() {
   // Fetch delivery men from backend
   const fetchDeliveryMen = async () => {
     try {
-      const res = await axios.get(`process.env.REACT_APP_API_URL/deliverymen`);
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/deliverymen`);
       setDeliveryMen(res.data);
     } catch (err) {
       console.error("Failed to fetch delivery men:", err);
@@ -60,7 +60,7 @@ function GovernmentPage() {
       return;
     }
     try {
-      const res = await axios.post(`process.env.REACT_APP_API_URL/schemes`, {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/schemes`, {
         name: newScheme.trim(),
       });
       setSchemes((prev) => [...prev, res.data]);
@@ -89,7 +89,7 @@ function GovernmentPage() {
         {
           name: editScheme.trim(),
         }
-       );
+      );
 
       const updatedSchemes = [...schemes];
       updatedSchemes[index] = res.data;
@@ -105,7 +105,7 @@ function GovernmentPage() {
   const handleDeleteScheme = async (index) => {
     const scheme = schemes[index];
     try {
-      await axios.delete(``process.env.REACT_APP_API_URL/schemes/${scheme._id}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/schemes/${scheme._id}`);
       setSchemes((prev) => prev.filter((_, i) => i !== index));
     } catch (err) {
       console.error("Error deleting scheme:", err);
@@ -133,7 +133,7 @@ function GovernmentPage() {
     }
 
     try {
-      await axios.put(`process.env.REACT_APP_API_URL/deliverymen/${id}/salary`, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/deliverymen/${id}/salary`, {
         salary: numericSalary, // ✅ send as number
       });
       alert("Salary updated successfully!");
@@ -178,7 +178,7 @@ function GovernmentPage() {
           marginBottom: "20px",
           borderRadius: "4px",
         }}
-        onClick={() => navigate('/')}
+        onClick={() => navigate("/")}
       >
         Back to Home Page
       </button>
@@ -244,7 +244,7 @@ function GovernmentPage() {
                 cursor: "pointer",
                 borderRadius: "4px",
               }}
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
             >
               Back to Home Page
             </button>
