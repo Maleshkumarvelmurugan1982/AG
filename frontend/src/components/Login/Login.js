@@ -11,10 +11,10 @@ function Login() {
 
   const navigate = useNavigate(); // Initialize navigate
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    // Check if email or userRole is empty
+    // Check if email, password, or userRole is empty
     if (!email || !password || !userRole) {
       alert("Please fill in all fields.");
       return;
@@ -24,47 +24,55 @@ function Login() {
 
     switch (userRole) {
       case "Farmer":
-        url = `process.env.REACT_APP_API_URL/farmer/login`;
+        url = `${process.env.REACT_APP_API_URL}/farmer/login`;
         break;
       case "Seller":
-        url = `process.env.REACT_APP_API_URL/seller/login`;
+        url = `${process.env.REACT_APP_API_URL}/seller/login`;
         break;
       case "Deliveryman":
-        url = `process.env.REACT_APP_API_URL/deliveryman/login`;
+        url = `${process.env.REACT_APP_API_URL}/deliveryman/login`;
         break;
       default:
         break;
     }
 
-    fetch(url, {
-      method: "POST",
-      crossDomain: true,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        userRole,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data, "userRegister");
-        if (data.status === "ok") {
-          alert("Login successful");
-          window.localStorage.setItem("token", data.data);
-          window.location.href = "/homepage-registeredusers"; // Redirect to homepage based on user role
-        } else {
-          alert("Login failed. Please check your credentials.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("Login failed. Please try again later.");
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        crossDomain: true,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          userRole,
+        }),
       });
+
+      // Check if response is ok and has JSON
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const dataText = await res.text(); // Read as text first
+      const data = dataText ? JSON.parse(dataText) : {}; // Parse JSON safely
+
+      console.log(data, "userRegister");
+
+      if (data.status === "ok") {
+        alert("Login successful");
+        window.localStorage.setItem("token", data.data);
+        window.location.href = "/homepage-registeredusers"; // Redirect
+      } else {
+        alert("Login failed. Please check your credentials.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Login failed. Please try again later.");
+    }
   }
 
   // Handle back button click
