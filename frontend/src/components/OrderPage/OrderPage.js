@@ -55,7 +55,7 @@ function AddProductPage() {
 
   const fetchItems = (category) => {
     // Fetch items based on category and update the items state
-    fetch(${process.env.REACT_APP_API_URL}/product?category=${category}`)
+    fetch(`${process.env.REACT_APP_API_URL}/product?category=${category}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
