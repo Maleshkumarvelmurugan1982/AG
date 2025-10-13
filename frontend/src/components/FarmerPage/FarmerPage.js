@@ -22,7 +22,7 @@ function FarmerPage() {
   useEffect(() => {
     const fetchSellerOrders = async () => {
       try {
-        const response = await fetch(`process.env.REACT_APP_API_URL/sellerorder/`);
+        const response = await fetch(${process.env.REACT_APP_API_URL}/sellerorder/`);
         const data = await response.json();
         setSellerOrders(data);
       } catch (error) {
@@ -32,7 +32,7 @@ function FarmerPage() {
 
     const fetchFarmerOrders = async () => {
       try {
-        const response = await fetch(`process.env.REACT_APP_API_URL/farmerorder/`);
+        const response = await fetch(${process.env.REACT_APP_API_URL}/farmerorder/`);
         const data = await response.json();
         setFarmerOrders(data);
       } catch (error) {
@@ -42,7 +42,7 @@ function FarmerPage() {
 
     const fetchDeliveryPosts = async () => {
       try {
-        const response = await fetch(`process.env.REACT_APP_API_URL/deliverypost/`);
+        const response = await fetch(${process.env.REACT_APP_API_URL}/deliverypost/`);
         const data = await response.json();
         setDeliveryPosts(data);
       } catch (error) {
