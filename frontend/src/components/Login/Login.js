@@ -1,6 +1,6 @@
 import "./login.css";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import FooterNew from "../Footer/FooterNew";
 
@@ -9,12 +9,11 @@ function Login() {
   const [password, setPassword] = useState("");
   const [userRole, setUserRole] = useState("");
 
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // Check if email, password, or userRole is empty
     if (!email || !password || !userRole) {
       alert("Please fill in all fields.");
       return;
@@ -39,33 +38,24 @@ function Login() {
     try {
       const res = await fetch(url, {
         method: "POST",
-        crossDomain: true,
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({
-          email,
-          password,
-          userRole,
-        }),
+        body: JSON.stringify({ email, password, userRole }),
       });
 
-      // Check if response is ok and has JSON
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
 
-      const dataText = await res.text(); // Read as text first
-      const data = dataText ? JSON.parse(dataText) : {}; // Parse JSON safely
-
-      console.log(data, "userRegister");
+      console.log("Backend response:", data);
 
       if (data.status === "ok") {
         alert("Login successful");
-        window.localStorage.setItem("token", data.data);
-        window.location.href = "/homepage-registeredusers"; // Redirect
+        localStorage.setItem("token", data.data);
+        navigate("/homepage-registeredusers"); // safer redirect
+      } else if (data.error) {
+        alert(data.error);
       } else {
         alert("Login failed. Please check your credentials.");
       }
@@ -75,9 +65,8 @@ function Login() {
     }
   }
 
-  // Handle back button click
   const handleBack = () => {
-    navigate("/"); // Redirect to home page
+    navigate("/");
   };
 
   return (
@@ -87,7 +76,7 @@ function Login() {
         <div className="login-image">
           <img
             src="https://assets-global.website-files.com/5d2fb52b76aabef62647ed9a/6195c8e178a99295d45307cb_allgreen1000-550.jpg"
-            alt=""
+            alt="Login"
             className="img-login"
           />
         </div>
@@ -101,7 +90,9 @@ function Login() {
                 type="email"
                 className="form-control"
                 placeholder="Enter email"
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
@@ -111,7 +102,9 @@ function Login() {
                 type="password"
                 className="form-control"
                 placeholder="Enter password"
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 
@@ -119,7 +112,9 @@ function Login() {
               <label>Role</label>
               <select
                 className="form-control"
+                value={userRole}
                 onChange={(e) => setUserRole(e.target.value)}
+                required
               >
                 <option value="">Select Role</option>
                 <option value="Farmer">Farmer</option>
@@ -141,13 +136,8 @@ function Login() {
               </button>
             </div>
 
-            {/* Back Button */}
             <div className="back-button-container" style={{ marginTop: "10px" }}>
-              <button
-                type="button"
-                className="back-button"
-                onClick={handleBack}
-              >
+              <button type="button" className="back-button" onClick={handleBack}>
                 Back to Home
               </button>
             </div>
