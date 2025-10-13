@@ -18,13 +18,13 @@ export default function SignUp() {
 
     switch (data.userRole) {
       case "Farmer":
-        url = `process.env.REACT_APP_API_URL/farmer/register`;
+        url = `${process.env.REACT_APP_API_URL}/farmer/register`;
         break;
       case "Seller":
-        url = `process.env.REACT_APP_API_URL/seller/register`;
+        url = `${process.env.REACT_APP_API_URL}/seller/register`;
         break;
       case "Deliveryman":
-        url = `process.env.REACT_APP_API_URL/deliveryman/register`;
+        url = `${process.env.REACT_APP_API_URL}/deliveryman/register`;
         break;
       default:
         break;
@@ -40,15 +40,18 @@ export default function SignUp() {
         body: JSON.stringify(data),
       });
 
+      // Handle empty or non-JSON responses
+      const text = await response.text();
+      const responseData = text ? JSON.parse(text) : {};
+
       if (response.ok) {
         alert("Registration Successful");
       } else {
-        const errorData = await response.json();
-        alert(errorData.error || "Registration failed");
+        alert(responseData.error || "Registration failed");
       }
     } catch (error) {
       console.error(error);
-      alert("Registration failed");
+      alert("Registration failed. Please try again later.");
     }
   };
 
@@ -67,9 +70,7 @@ export default function SignUp() {
                 <option value="Seller">Seller</option>
                 <option value="Deliveryman">Deliveryman</option>
               </select>
-              {errors.userRole && (
-                <span className="error">Role is required</span>
-              )}
+              {errors.userRole && <span className="error">Role is required</span>}
             </div>
 
             <div className="first-name">
@@ -79,9 +80,7 @@ export default function SignUp() {
                 placeholder="First name"
                 {...register("fname", { required: true })}
               />
-              {errors.fname && (
-                <span className="error">First name is required</span>
-              )}
+              {errors.fname && <span className="error">First name is required</span>}
             </div>
 
             <div className="last-name">
@@ -91,9 +90,7 @@ export default function SignUp() {
                 placeholder="Last name"
                 {...register("lname", { required: true })}
               />
-              {errors.lname && (
-                <span className="error">Last name is required</span>
-              )}
+              {errors.lname && <span className="error">Last name is required</span>}
             </div>
 
             <div className="email">
@@ -129,9 +126,7 @@ export default function SignUp() {
                 <option value="madurai">Madurai</option>
                 <option value="chennai">Chennai</option>
               </select>
-              {errors.district && (
-                <span className="error">District is required</span>
-              )}
+              {errors.district && <span className="error">District is required</span>}
             </div>
 
             <div className="sign-up">
