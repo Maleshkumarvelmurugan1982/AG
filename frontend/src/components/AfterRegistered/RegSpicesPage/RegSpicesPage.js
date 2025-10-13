@@ -11,7 +11,7 @@ function SpicesPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_API_URL/product/Spices');
+        const response = await fetch(`process.env.REACT_APP_API_URL/product/Spices`);
         const data = await response.json();
         setProducts(data);
       } catch (error) {
